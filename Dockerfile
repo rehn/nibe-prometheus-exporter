@@ -4,6 +4,10 @@ WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
+
+ARG TARGETOS
+ARG TARGETARCH
+
 RUN echo "Bygger för OS: $TARGETOS, Arch: $TARGETARCH" && CGO_ENABLED=0 GOOS=linux GOOS=$TARGETOS GOARCH=$TARGETARCH go build -ldflags="-s -w" -o nibe-prometheus-exporter .
 
 FROM alpine:latest
