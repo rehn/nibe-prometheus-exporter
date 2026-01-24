@@ -7,7 +7,9 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"regexp"
 	"strconv"
+	"strings"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -58,6 +60,13 @@ func (c *DeviceCollector) Collect(ch chan<- prometheus.Metric) {
 		}
 
 		// Create the metric with labels
+
+		deviceMetric := prometheus.NewDesc(
+			transformNameFromTitle(point.Title),
+			"Current value of a device data point",
+			[]string{"id", "title", "unit"}, nil,
+		)
+
 		ch <- prometheus.MustNewConstMetric(
 			deviceMetric,
 			prometheus.GaugeValue,
@@ -65,6 +74,13 @@ func (c *DeviceCollector) Collect(ch chan<- prometheus.Metric) {
 			id, point.Title, point.Metadata.Unit,
 		)
 	}
+}
+
+func transformNameFromTitle(title string) string {
+	str := strings.ToLower(title)
+	str = strings.ReplaceAll(str, " ", "_")
+	reg := regexp.MustCompile(`[^a-z0-9_]+`)
+	return "nibe_" + reg.ReplaceAllString(str, "")
 }
 
 // fetchDeviceData handles the HTTP logic we discussed earlier
