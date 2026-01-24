@@ -17,13 +17,9 @@ import (
 
 // Define the GaugeVec for our device points
 var (
-	deviceMetric = prometheus.NewDesc(
-		"device_point_value",
-		"Current value of a device data point",
-		[]string{"id", "title", "unit"}, nil,
-	)
-	username string
-	password string
+	deviceMetric *prometheus.Desc
+	username     string
+	password     string
 )
 
 type DeviceCollector struct {
@@ -61,7 +57,7 @@ func (c *DeviceCollector) Collect(ch chan<- prometheus.Metric) {
 
 		// Create the metric with labels
 
-		deviceMetric := prometheus.NewDesc(
+		deviceMetric = prometheus.NewDesc(
 			transformNameFromTitle(point.Title),
 			"Current value of a device data point",
 			[]string{"id", "title", "unit"}, nil,
