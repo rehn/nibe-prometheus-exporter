@@ -120,7 +120,7 @@ func getPort(name string, defaultValue string) string {
 		log.Fatalf("Port %d is out of valid range (1-65535)", port)
 	}
 
-	return fmt.Sprintf(":%d", port)
+	return fmt.Sprintf("%d", port)
 }
 
 func requireEnv(name string) string {
