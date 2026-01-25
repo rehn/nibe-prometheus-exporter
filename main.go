@@ -7,9 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"regexp"
 	"strconv"
-	"strings"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -17,9 +15,13 @@ import (
 
 // Define the GaugeVec for our device points
 var (
-	deviceMetric *prometheus.Desc
-	username     string
-	password     string
+	deviceMetric = prometheus.NewDesc(
+		prometheus.BuildFQName("nibe", "device", "point_value"),
+		"Current value of a NIBE device data point",
+		[]string{"id", "title", "unit"}, nil,
+	)
+	username string
+	password string
 )
 
 type DeviceCollector struct {
@@ -42,7 +44,7 @@ func (c *DeviceCollector) Collect(ch chan<- prometheus.Metric) {
 
 	// 2. Loop through the map and push to Prometheus
 	for id, point := range data {
-		val := point.Value.IntegerValue
+		val := float64(point.Value.IntegerValue)
 
 		// Ignore the "null" sensor value (-32768)
 		if val == -32768 {
@@ -51,17 +53,10 @@ func (c *DeviceCollector) Collect(ch chan<- prometheus.Metric) {
 
 		// Calculate actual value based on divisor
 		actualValue := val
+
 		if point.Metadata.Divisor > 0 {
-			actualValue = val / point.Metadata.Divisor
+			actualValue = val / float64(point.Metadata.Divisor)
 		}
-
-		// Create the metric with labels
-
-		deviceMetric = prometheus.NewDesc(
-			transformNameFromTitle(point.Title),
-			"Current value of a device data point",
-			[]string{"id", "title", "unit"}, nil,
-		)
 
 		ch <- prometheus.MustNewConstMetric(
 			deviceMetric,
@@ -70,13 +65,6 @@ func (c *DeviceCollector) Collect(ch chan<- prometheus.Metric) {
 			id, point.Title, point.Metadata.Unit,
 		)
 	}
-}
-
-func transformNameFromTitle(title string) string {
-	str := strings.ToLower(title)
-	str = strings.ReplaceAll(str, " ", "_")
-	reg := regexp.MustCompile(`[^a-z0-9_]+`)
-	return "nibe_" + reg.ReplaceAllString(str, "")
 }
 
 // fetchDeviceData handles the HTTP logic we discussed earlier
@@ -137,7 +125,7 @@ func getPort(name string, defaultValue string) string {
 
 func requireEnv(name string) string {
 	v := os.Getenv(name)
-	if name == "" {
+	if v == "" {
 		log.Fatal("Missing environment variable: " + name)
 	}
 	return v
