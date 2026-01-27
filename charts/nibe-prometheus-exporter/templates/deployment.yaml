@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nibe-prometheus-exporter
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: nibe-prometheus-exporter
+    spec:
+      containers:
+      - env:
+        - name: DEVICE_SERIAL
+          value: {{ .Values.nibe.device_serial | quote }}
+        - name: USERNAME
+          value: {{ .Values.nibe.username | quote }}
+        - name: PASSWORD
+          value: {{ .Values.nibe.password | quote }}
+        - name: API_URL
+          value: {{ .Values.nibe.api_url | quote }}
+        - name: METRICS_PORT
+          value: {{ .Values.metrics.port }}
+        image: "rehn/nibe-prometheus-exporter:{{ .Values.image.tag }}"
+        imagePullPolicy: IfNotPresent
+        name: nibe-prometheus-exporter
+        ports:
+        - containerPort: {{ .Values.metrics.port }}
+          protocol: TCP
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      securityContext: {}
+      terminationGracePeriodSeconds: 30

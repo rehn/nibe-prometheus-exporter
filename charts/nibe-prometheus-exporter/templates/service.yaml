@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+{{- if .Values.metrics.scrape }}
+    prometheus.io/port: {{ .Values.metrics.port | quote }}
+    prometheus.io/scrape: "true"
+{{- end }}
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  ports:
+  - name: nibe-prometheus-exporter
+    port: {{ .Values.metrics.port }}
+    protocol: TCP
+    targetPort: {{ .Values.metrics.port }}
+  selector:
+    app: nibe-prometheus-exporter
+  sessionAffinity: None
+  type: ClusterIP

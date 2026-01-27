@@ -1,0 +1,12 @@
+image:
+  tag: latest
+
+metrics: 
+  scrape: true
+  port: 9090
+
+nibe:
+ device_serial: "" # Add your device Serial/ID
+ username: "" # Set your username for Nibe waterpump
+ password: "" # Set your password for Nibe waterpump
+ api_url: "" # Set your Nibe waterpump IP ex: https://192.168.1.200:8443 

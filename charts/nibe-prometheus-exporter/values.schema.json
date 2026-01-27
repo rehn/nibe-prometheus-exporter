@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["nibe"],
+  "properties": {
+    "nibe": {
+        "type": "object",
+        "required": ["username", "password", "api_url","device_serial"],
+        "properties": {
+            "username": {
+            "type": "string",
+            "minLength": 1
+            },
+            "password": {
+            "type": "string",
+            "minLength": 1
+            },
+            "api_url": {
+            "type": "string"
+            },
+            "device_serial": {
+            "type": "string",
+            "minLength": 1 
+            }
+        }
+    },  
+    "metrics": {
+      "type": "object",
+      "properties": {
+        "port": {
+          "type": "integer",
+          "minimum": 1024,
+          "maximum": 65535
+        },
+        "scrape": {
+          "type": "boolean"
+        }
+      }
+    },
+    "image": {
+        "type": "object",
+        "properties": {
+        "tag": {
+            "type": "string",
+            "minLength": 1
+        }
+      }
+    }
+  }
+}

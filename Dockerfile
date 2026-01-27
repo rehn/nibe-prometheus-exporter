@@ -8,7 +8,7 @@ COPY . .
 ARG TARGETOS
 ARG TARGETARCH
 
-RUN echo "Bygger för OS: $TARGETOS, Arch: $TARGETARCH" && CGO_ENABLED=0 GOOS=linux GOOS=$TARGETOS GOARCH=$TARGETARCH go build -ldflags="-s -w" -o nibe-prometheus-exporter .
+RUN echo "Bygger för OS: $TARGETOS, Arch: $TARGETARCH" && CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -ldflags="-s -w" -o nibe-prometheus-exporter .
 
 FROM alpine:latest
 RUN apk --no-cache add ca-certificates
