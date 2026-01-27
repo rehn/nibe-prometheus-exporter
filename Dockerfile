@@ -22,4 +22,4 @@ RUN chown exporteruser:exportergroup nibe-prometheus-exporter
 USER 1000
 EXPOSE 9090
 ENV METRICS_PORT=9090
-CMD ["./nibe-prometheus-exporter"]
+CMD ["/home/exporteruser/nibe-prometheus-exporter"]
