@@ -1,4 +1,4 @@
 apiVersion: v2
 name: nibe-prometheus-exporter
-version: 0.2.2  
+version: 0.2.3
 description: A prometheus exporter for NIBE heat pump using their restAPI

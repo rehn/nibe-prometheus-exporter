@@ -18,6 +18,12 @@ spec:
       labels:
         app: nibe-prometheus-exporter
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
       containers:
       - env:
         - name: DEVICE_SERIAL
@@ -36,7 +42,13 @@ spec:
         ports:
         - containerPort: {{ .Values.metrics.port }}
           protocol: TCP
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          runAsNonRoot: true
+          readOnlyRootFilesystem: true
       dnsPolicy: ClusterFirst
       restartPolicy: Always
-      securityContext: {}
       terminationGracePeriodSeconds: 30
