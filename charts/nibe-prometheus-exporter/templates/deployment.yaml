@@ -29,7 +29,7 @@ spec:
         - name: API_URL
           value: {{ .Values.nibe.api_url | quote }}
         - name: METRICS_PORT
-          value: {{ .Values.metrics.port }}
+          value: {{ .Values.metrics.port |quote }}
         image: "rehn/nibe-prometheus-exporter:{{ .Values.image.tag }}"
         imagePullPolicy: IfNotPresent
         name: nibe-prometheus-exporter
