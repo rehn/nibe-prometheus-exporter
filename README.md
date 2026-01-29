@@ -10,3 +10,15 @@
 * PASSWORD
 * METRICS_PORT (optional default: 9090)
 
+
+## Example usage with docker
+```bash
+docker run -i \
+-e API_URL=https://<NIBE_IPADDRESS:NIBE_PORT> \
+-e DEVICE_SERIAL=<NIBE_SERIAL> \
+-e USERNAME=<USERNAME> \
+-e PASSWORD=<PASSWORD> \
+-p 9090:9090 \
+-t rehn/nibe-prometheus-exporter:latest 
+```
+Will be accessible from  http://localhost:9090/metrics
