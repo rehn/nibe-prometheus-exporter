@@ -22,3 +22,11 @@ docker run -i \
 -t rehn/nibe-prometheus-exporter:latest 
 ```
 Will be accessible from  http://localhost:9090/metrics
+
+
+## Install in kubernetes with helm
+```bash
+helm repo add nibe-exporter https://rehn.github.io/nibe-prometheus-exporter/
+helm repo update
+helm install my-release nibe-exporter/nibe-prometheus-exporter
+```

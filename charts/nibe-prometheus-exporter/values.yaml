@@ -1,12 +1,20 @@
 image:
+  # -- Image tag to use, https://hub.docker.com/repository/docker/rehn/nibe-prometheus-exporter/general
   tag: latest
 
 metrics: 
+  # -- If true service will have annotations prometheus.io/port and prometheus.io/scrape: true
   scrape: true
+  # -- Port service will expose for prometheus to scrape
   port: 9090
 
+# -- Settings specific for your NIBE product
 nibe:
- device_serial: "" # Add your device Serial/ID
- username: "" # Set your username for Nibe waterpump
- password: "" # Set your password for Nibe waterpump
- api_url: "" # Set your Nibe waterpump IP ex: https://192.168.1.200:8443 
+ # -- Set your device Serial/ID
+ device_serial: ""
+ # -- Set your username for Nibe waterpump
+ username: "" 
+ # -- Set your password for Nibe waterpump
+ password: ""
+ # -- Set your Nibe waterpump IP ex: https://192.168.1.200:8443
+ api_url: "" 
