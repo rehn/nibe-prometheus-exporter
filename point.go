@@ -21,7 +21,6 @@ type Value struct {
 	StringValue  string  `json:"stringValue"`
 }
 
-// GetActualValue calculates the real number (e.g., 105 / 10 = 10.5)
 func (p Point) GetActualValue() float64 {
 	if p.Metadata.Divisor == 0 {
 		return p.Value.IntegerValue

@@ -13,7 +13,6 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-// Define the GaugeVec for our device points
 var (
 	deviceMetric = prometheus.NewDesc(
 		prometheus.BuildFQName("nibe", "device", "point_value"),
@@ -28,30 +27,24 @@ type DeviceCollector struct {
 	endpoint string
 }
 
-// Describe sends the super-type of all metrics we can collect
 func (c *DeviceCollector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- deviceMetric
 }
 
-// Collect is called by Prometheus on every scrape
 func (c *DeviceCollector) Collect(ch chan<- prometheus.Metric) {
-	// 1. Fetch data from your API
 	data, err := fetchDeviceData(c.endpoint)
 	if err != nil {
 		log.Printf("Error fetching data: %v", err)
 		return
 	}
 
-	// 2. Loop through the map and push to Prometheus
 	for id, point := range data {
 		val := float64(point.Value.IntegerValue)
 
-		// Ignore the "null" sensor value (-32768)
 		if val == -32768 {
 			continue
 		}
 
-		// Calculate actual value based on divisor
 		actualValue := val
 
 		if point.Metadata.Divisor > 0 {
@@ -67,7 +60,6 @@ func (c *DeviceCollector) Collect(ch chan<- prometheus.Metric) {
 	}
 }
 
-// fetchDeviceData handles the HTTP logic we discussed earlier
 func fetchDeviceData(url string) (map[string]Point, error) {
 	tr := &http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}}
 	client := &http.Client{Transport: tr}
@@ -109,13 +101,11 @@ func getPort(name string, defaultValue string) string {
 		val = defaultValue
 	}
 
-	// 1. Convert string to integer
 	port, err := strconv.Atoi(val)
 	if err != nil {
 		log.Fatalf("Invalid port %q for %s: must be a number", val, name)
 	}
 
-	// 2. Validate the port range (1 to 65535)
 	if port < 1 || port > 65535 {
 		log.Fatalf("Port %d is out of valid range (1-65535)", port)
 	}
