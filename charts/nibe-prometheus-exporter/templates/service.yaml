@@ -17,4 +17,4 @@ spec:
   selector:
     app: nibe-prometheus-exporter
   sessionAffinity: None
-  type: ClusterIP
+  type: {{ .Values.service.type }}

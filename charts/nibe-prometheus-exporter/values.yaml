@@ -7,7 +7,9 @@ metrics:
   scrape: true
   # -- Port service will expose for prometheus to scrape
   port: 9090
-
+service:
+  # -- Kindo of service ClusterIP, LoadBalancer, NodePort 
+  type: ClusterIP
 # -- Settings specific for your NIBE product
 nibe:
  # -- Set your device Serial/ID
