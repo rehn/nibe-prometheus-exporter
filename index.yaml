@@ -2,6 +2,14 @@ apiVersion: v1
 entries:
   nibe-prometheus-exporter:
   - apiVersion: v2
+    created: "2026-11-17T22:33:31.945849733Z"
+    description: A prometheus exporter for NIBE heat pump using their restAPI
+    digest: 946ec976a526382a1fd64138388c45659519268e02aaed92bb1a0ef0aa816dd7
+    name: nibe-prometheus-exporter
+    urls:
+    - https://github.com/rehn/nibe-prometheus-exporter/releases/download/nibe-prometheus-exporter-0.3.0/nibe-prometheus-exporter-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
     created: "2026-10-27T20:44:05.28516298Z"
     description: A prometheus exporter for NIBE heat pump using their restAPI
     digest: fb7ecce8c6e9c56047a1dec0af261ccdc3ef4468ee74cd485aac2514ad5e1105
@@ -33,4 +41,4 @@ entries:
     urls:
     - https://github.com/rehn/nibe-prometheus-exporter/releases/download/nibe-prometheus-exporter-0.2.1/nibe-prometheus-exporter-0.2.1.tgz
     version: 0.2.1
-generated: "2026-10-27T20:44:05.28520849Z"
+generated: "2026-11-17T22:33:31.945867276Z"
