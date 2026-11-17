@@ -1,0 +1,6 @@
+.git
+.github
+charts
+*.md
+*_test.go
+nibe-prometheus-exporter

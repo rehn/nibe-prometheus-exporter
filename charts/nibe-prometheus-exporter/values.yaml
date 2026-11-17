@@ -1,22 +1,40 @@
 image:
-  # -- Image tag to use, https://hub.docker.com/repository/docker/rehn/nibe-prometheus-exporter/general
+  # -- Image repository
+  repository: rehn/nibe-prometheus-exporter
+  # -- Image tag to use, https://hub.docker.com/r/rehn/nibe-prometheus-exporter/tags
   tag: latest
+  # -- Image pull policy
+  pullPolicy: IfNotPresent
 
-metrics: 
+metrics:
   # -- If true service will have annotations prometheus.io/port and prometheus.io/scrape: true
   scrape: true
   # -- Port service will expose for prometheus to scrape
   port: 9090
+
 service:
-  # -- Kindo of service ClusterIP, LoadBalancer, NodePort 
+  # -- Kind of service: ClusterIP, LoadBalancer or NodePort
   type: ClusterIP
+
+# -- Container resource requests/limits
+resources:
+  requests:
+    cpu: 10m
+    memory: 16Mi
+  limits:
+    memory: 64Mi
+
 # -- Settings specific for your NIBE product
 nibe:
- # -- Set your device Serial/ID
- device_serial: ""
- # -- Set your username for Nibe waterpump
- username: "" 
- # -- Set your password for Nibe waterpump
- password: ""
- # -- Set your Nibe waterpump IP ex: https://192.168.1.200:8443
- api_url: "" 
+  # -- Set your device Serial/ID
+  device_serial: ""
+  # -- Set your username for Nibe heat pump (ignored if existingSecret is set)
+  username: ""
+  # -- Set your password for Nibe heat pump (ignored if existingSecret is set)
+  password: ""
+  # -- Name of an existing Secret with keys USERNAME and PASSWORD. If set, username/password above are not used
+  existingSecret: ""
+  # -- Set your Nibe heat pump URL ex: https://192.168.1.200:8443
+  api_url: ""
+  # -- Skip TLS certificate verification (the NIBE local API uses a self-signed certificate)
+  tlsInsecureSkipVerify: true

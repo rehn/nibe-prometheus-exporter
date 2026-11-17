@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: {{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "nibe-exporter.labels" . | nindent 4 }}
 spec:
   replicas: 1
   selector:
@@ -16,32 +18,62 @@ spec:
   template:
     metadata:
       labels:
-        app: nibe-prometheus-exporter
+        {{- include "nibe-exporter.labels" . | nindent 8 }}
+      {{- if not .Values.nibe.existingSecret }}
+      annotations:
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+      {{- end }}
     spec:
+      automountServiceAccountToken: false
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000
+        runAsGroup: 1000
         fsGroup: 1000
         seccompProfile:
           type: RuntimeDefault
       containers:
-      - env:
+      - name: nibe-prometheus-exporter
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
         - name: DEVICE_SERIAL
           value: {{ .Values.nibe.device_serial | quote }}
-        - name: USERNAME
-          value: {{ .Values.nibe.username | quote }}
-        - name: PASSWORD
-          value: {{ .Values.nibe.password | quote }}
         - name: API_URL
           value: {{ .Values.nibe.api_url | quote }}
+        - name: USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "nibe-exporter.secretName" . }}
+              key: USERNAME
+        - name: PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "nibe-exporter.secretName" . }}
+              key: PASSWORD
         - name: METRICS_PORT
-          value: {{ .Values.metrics.port |quote }}
-        image: "rehn/nibe-prometheus-exporter:{{ .Values.image.tag }}"
-        imagePullPolicy: IfNotPresent
-        name: nibe-prometheus-exporter
+          value: {{ .Values.metrics.port | quote }}
+        {{- if not .Values.nibe.tlsInsecureSkipVerify }}
+        - name: TLS_INSECURE_SKIP_VERIFY
+          value: "false"
+        {{- end }}
         ports:
-        - containerPort: {{ .Values.metrics.port }}
+        - name: metrics
+          containerPort: {{ .Values.metrics.port }}
           protocol: TCP
+        livenessProbe:
+          tcpSocket:
+            port: metrics
+          initialDelaySeconds: 5
+          periodSeconds: 30
+        readinessProbe:
+          tcpSocket:
+            port: metrics
+          periodSeconds: 10
+        {{- with .Values.resources }}
+        resources:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:

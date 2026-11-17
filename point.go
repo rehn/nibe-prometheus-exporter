@@ -22,7 +22,7 @@ type Value struct {
 }
 
 func (p Point) GetActualValue() float64 {
-	if p.Metadata.Divisor == 0 {
+	if p.Metadata.Divisor <= 0 {
 		return p.Value.IntegerValue
 	}
 	return p.Value.IntegerValue / p.Metadata.Divisor

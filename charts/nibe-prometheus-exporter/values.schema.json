@@ -4,46 +4,50 @@
   "required": ["nibe"],
   "properties": {
     "nibe": {
-        "type": "object",
-        "required": ["username", "password", "api_url","device_serial"],
-        "properties": {
-            "username": {
-            "type": "string",
-            "minLength": 1
-            },
-            "password": {
-            "type": "string",
-            "minLength": 1
-            },
-            "api_url": {
-            "type": "string"
-            },
-            "device_serial": {
-            "type": "string",
-            "minLength": 1 
-            }
+      "type": "object",
+      "required": ["api_url", "device_serial"],
+      "properties": {
+        "username": { "type": "string" },
+        "password": { "type": "string" },
+        "existingSecret": { "type": "string" },
+        "api_url": { "type": "string", "pattern": "^https?://.+" },
+        "device_serial": { "type": "string", "minLength": 1 },
+        "tlsInsecureSkipVerify": { "type": "boolean" }
+      },
+      "anyOf": [
+        {
+          "required": ["existingSecret"],
+          "properties": { "existingSecret": { "minLength": 1 } }
+        },
+        {
+          "required": ["username", "password"],
+          "properties": {
+            "username": { "minLength": 1 },
+            "password": { "minLength": 1 }
+          }
         }
-    },  
+      ]
+    },
     "metrics": {
       "type": "object",
       "properties": {
-        "port": {
-          "type": "integer",
-          "minimum": 1024,
-          "maximum": 65535
-        },
-        "scrape": {
-          "type": "boolean"
-        }
+        "port": { "type": "integer", "minimum": 1024, "maximum": 65535 },
+        "scrape": { "type": "boolean" }
       }
     },
+    "service": {
+      "type": "object",
+      "properties": {
+        "type": { "type": "string", "enum": ["ClusterIP", "LoadBalancer", "NodePort"] }
+      }
+    },
+    "resources": { "type": "object" },
     "image": {
-        "type": "object",
-        "properties": {
-        "tag": {
-            "type": "string",
-            "minLength": 1
-        }
+      "type": "object",
+      "properties": {
+        "repository": { "type": "string", "minLength": 1 },
+        "tag": { "type": "string", "minLength": 1 },
+        "pullPolicy": { "type": "string", "enum": ["Always", "IfNotPresent", "Never"] }
       }
     }
   }
